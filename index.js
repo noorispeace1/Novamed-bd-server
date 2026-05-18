@@ -1,31 +1,20 @@
 const express = require('express');
 const dotenv = require('dotenv');
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 
 dotenv.config();
 
-
 const app = express();
 const port = process.env.PORT || 8080;
 
-
+// Middleware
 app.use(cors());
-
+app.use(express.json()); // Essential for handling JSON requests later
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-
-
-
-
-
-
-
-
-
 
 const uri = "mongodb+srv://novamed:PY22qgU03VH6L81d@cluster0.agkguij.mongodb.net/?appName=Cluster0";
 
@@ -40,39 +29,56 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-
+    // Connect the client to the server
     await client.connect();
 
+    const db = client.db("novameddb");
+    const detailsCollection = db.collection("drdetails");
 
-    const db = client.db("novameddb")
-    const detailsCollection = db.collection("drdetails")
+    // Get all appointments
+    app.get("/all-appointment", async (req, res) => {
+      try {
+        const cursor = detailsCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch appointments", error });
+      }
+    });
 
-    app.get("/details", async (req, res) => {
-      const cursor = detailsCollection.find();
-      const result = await cursor.toArray();
-      // console.log(result);
-      res.send(result)
-    })
+   
+    app.get('/all-appointment/:detailsId', async (req, res) => {
+      try {
+        const { detailsId } = req.params;
+        
+     console.log(detailsId);
+        if (!ObjectId.isValid(detailsId)) {
+          return res.status(400).send({ message: "Invalid ID format" });
+        }
 
+        const query = { _id: detailsId };
+        
+     
+        const result = await detailsCollection.findOne(query); 
 
+        if (!result) {
+          return res.status(404).send({ message: "Appointment not found" });
+        }
 
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Server error", error });
+      }
+    });
 
-
-
-
-    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-
-    // await client.close();
+  } catch (err) {
+    console.error("Database connection failed:", err);
   }
 }
+
+// Run the database function
 run().catch(console.dir);
-
-
-
-
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

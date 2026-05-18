@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-const uri = "mongodb+srv://novamed:PY22qgU03VH6L81d@cluster0.agkguij.mongodb.net/?appName=Cluster0";
+const uri = process.env.MONGODB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {

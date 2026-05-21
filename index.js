@@ -197,4 +197,4 @@ const client = new MongoClient(uri, {
 
 app.listen(port, () => {
   console.log(`NovaMed server listening on port ${port}`);
-})
+});

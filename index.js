@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-const JWKS = createRemoteJWKSet(new URL(`${process.env.BETTER_AUTH_URL}/api/auth/jwks`));
+const JWKS = createRemoteJWKSet(new URL(`${process.env.NEXT_PUBLIC_API_URI}/api/auth/jwks`));
 
 const verifyToken = async (req, res, next) => {
   const authHeader = req?.headers.authorization;

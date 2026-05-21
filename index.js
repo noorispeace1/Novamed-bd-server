@@ -25,9 +25,9 @@ const client = new MongoClient(uri, {
   }
 });
 
-async function run() {
-  try {
-    await client.connect();
+// async function run() {
+//   try {
+    // await client.connect();
 
     const db = client.db("novameddb");
     const detailsCollection = db.collection("drdetails");
@@ -187,13 +187,13 @@ async function run() {
       }
     });
 
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } catch (err) {
-    console.error("Database connection failed:", err);
-  }
-}
+//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//   } catch (err) {
+//     console.error("Database connection failed:", err);
+//   }
+// }
 
-run().catch(console.dir);
+// run().catch(console.dir);
 
 app.listen(port, () => {
   console.log(`NovaMed server listening on port ${port}`);
